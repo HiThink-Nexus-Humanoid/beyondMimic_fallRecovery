@@ -69,7 +69,7 @@ class MySceneCfg(InteractiveSceneCfg):
         spawn=sim_utils.DomeLightCfg(color=(0.13, 0.13, 0.13), intensity=1000.0),
     )
     contact_forces = ContactSensorCfg(
-        prim_path="{ENV_REGEX_NS}/Robot/.*", history_length=3, track_air_time=True, force_threshold=10.0, debug_vis=True
+        prim_path="{ENV_REGEX_NS}/Robot/.*", history_length=3, track_air_time=True, force_threshold=10.0, debug_vis=False
     )
 
 
@@ -85,7 +85,7 @@ class CommandsCfg:
     motion = mdp.MotionCommandCfg(
         asset_name="robot",
         resampling_time_range=(1.0e9, 1.0e9),
-        debug_vis=True,
+        debug_vis=False,
         pose_range={
             "x": (-0.05, 0.05),
             "y": (-0.05, 0.05),
@@ -242,7 +242,7 @@ class RewardsCfg:
             "sensor_cfg": SceneEntityCfg(
                 "contact_forces",
                 body_names=[
-                    r"^(?!left_ankle_roll_link$)(?!right_ankle_roll_link$)(?!left_wrist_yaw_link$)(?!right_wrist_yaw_link$).+$"
+                    r"^(?!left_ankle_roll_link$)(?!right_ankle_roll_link$)(?!left_wrist_roll_link$)(?!right_wrist_roll_link$).+$"
                 ],
             ),
             "threshold": 1.0,
@@ -271,8 +271,6 @@ class TerminationsCfg:
             "body_names": [
                 "left_ankle_roll_link",
                 "right_ankle_roll_link",
-                "left_wrist_yaw_link",
-                "right_wrist_yaw_link",
             ],
         },
     )
