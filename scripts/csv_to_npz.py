@@ -304,7 +304,7 @@ def run_simulator(sim: sim_utils.SimulationContext, scene: InteractiveScene, joi
             import wandb
 
             COLLECTION = args_cli.output_name
-            run = wandb.init(project="csv_to_npz", name=COLLECTION)
+            run = wandb.init(project="motion", name=COLLECTION)
             print(f"[INFO]: Logging motion to wandb: {COLLECTION}")
             REGISTRY = "motions"
             logged_artifact = run.log_artifact(artifact_or_path="/tmp/motion.npz", name=COLLECTION, type=REGISTRY)

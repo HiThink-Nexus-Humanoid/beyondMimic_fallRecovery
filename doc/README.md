@@ -1,11 +1,16 @@
 
 ```bash
 python scripts/csv_to_npz.py --input_file scripts/data/0007_Walking001_stageii.csv --input_fps 30 --output_name walking --headless
+
+
+python scripts/csv_to_npz.py --input_file scripts/data/0005_Jogging001_stageii.csv --input_fps 30 --output_name jogging --headless
+
+python scripts/csv_to_npz.py --input_file scripts/data/fall_recovery.csv --input_fps 1 --output_name fall_recovery --headless
 ```
 
 
 ```bash
-python scripts/replay_npz.py --registry_name=htzhouhit-ths-org/wandb-registry-motions/walking
+python scripts/replay_npz.py --registry_name=htzhouhit-ths-org/wandb-registry-motions/fall_recovery
 ```
 
 
@@ -18,6 +23,14 @@ python scripts/rsl_rl/train.py --task=Tracking-Flat-THS-v0 --registry_name htzho
 
 python scripts/rsl_rl/train.py --task=Tracking-Flat-THS-v0 --registry_name htzhouhit-ths-org/wandb-registry-motions/walking \
 --headless --logger wandb --log_project_name motion_walk --run_name walk --num_envs=4096
+
+
+
+python scripts/rsl_rl/train.py --task=Tracking-Flat-THS-v0 --registry_name htzhouhit-ths-org/wandb-registry-motions/fall_recovery \
+--headless --logger wandb --log_project_name motion-fall_recovery --run_name fall_recovery --num_envs=4096
+
+python scripts/rsl_rl/train.py --task=Tracking-Flat-THS-v0 --registry_name htzhouhit-ths-org/wandb-registry-motions/fall_recovery --logger wandb --log_project_name motion-fall_recovery --run_name fall_recovery --num_envs=4096
+
 ```
 
 

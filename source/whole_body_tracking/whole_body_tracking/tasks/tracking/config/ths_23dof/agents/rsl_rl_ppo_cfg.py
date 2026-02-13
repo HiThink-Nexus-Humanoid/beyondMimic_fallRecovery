@@ -7,7 +7,7 @@ class ThsFlatPPORunnerCfg(RslRlOnPolicyRunnerCfg):
     num_steps_per_env = 24
     max_iterations = 30000
     save_interval = 50
-    experiment_name = "humanoid_flat"
+    experiment_name = "fall_recovery"
     empirical_normalization = False
     policy = RslRlPpoActorCriticCfg(
         init_noise_std=1.0,

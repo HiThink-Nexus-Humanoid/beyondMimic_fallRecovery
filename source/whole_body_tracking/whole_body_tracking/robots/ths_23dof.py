@@ -5,7 +5,7 @@ from isaaclab.assets.articulation import ArticulationCfg
 from whole_body_tracking.assets import ASSET_DIR
 
 
-THS_ACTION_SCALE = 0.5
+# THS_ACTION_SCALE = 0.5
 
 THS_23DOF_CFG = ArticulationCfg(
     spawn=sim_utils.UsdFileCfg(
@@ -31,8 +31,8 @@ THS_23DOF_CFG = ArticulationCfg(
     ),
     init_state=ArticulationCfg.InitialStateCfg(
         pos=(0.0, 0.0, 0.2),
-        # rot=(0,1,0,-1),  # (w,x,y,z) 趴姿
-        rot=(0,1,0,1),  # (w,x,y,z) 躺姿
+        rot=(0,1,0,-1),  # (w,x,y,z) 趴姿
+        # rot=(0,1,0,1),  # (w,x,y,z) 躺姿
         # rot=(1,0,0,0),  # (w,x,y,z) 站姿
         joint_pos={      
                     "left_hip_pitch_joint": 0.3,                        
@@ -190,4 +190,5 @@ for a in THS_23DOF_CFG.actuators.values():
         s = {n: s for n in names}
     for n in names:
         if n in e and n in s and s[n]:
-            THS_ACTION_SCALE[n] = 0.25 * e[n] / s[n]
+            # THS_ACTION_SCALE[n] = 0.25 * e[n] / s[n]
+            THS_ACTION_SCALE[n] = 0.5

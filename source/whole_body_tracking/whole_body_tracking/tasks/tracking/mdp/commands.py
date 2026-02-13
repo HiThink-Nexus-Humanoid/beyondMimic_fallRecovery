@@ -111,6 +111,9 @@ class MotionCommand(CommandTerm):
 
     @property
     def body_pos_w(self) -> torch.Tensor:
+        # print("self.time_steps = ", self.time_steps, self.motion.time_step_total)  # --- IGNORE ---
+        # print("self.motion.body_pos_w[self.time_steps] = ", self.motion.body_pos_w[self.time_steps])
+        # print("self.motion.body_pos_w = ", self.motion.body_pos_w)
         return self.motion.body_pos_w[self.time_steps] + self._env.scene.env_origins[:, None, :]
 
     @property
@@ -249,6 +252,8 @@ class MotionCommand(CommandTerm):
         root_ori = self.body_quat_w[:, 0].clone()
         root_lin_vel = self.body_lin_vel_w[:, 0].clone()
         root_ang_vel = self.body_ang_vel_w[:, 0].clone()
+        # print("env_ids = ", env_ids)  # --- IGNORE ---
+        # print("root_pos = ", root_pos, "root_ori = ", root_ori, "root_lin_vel = ", root_lin_vel, " root_ang_vel = ", root_ang_vel)  # --- IGNORE ---
 
         range_list = [self.cfg.pose_range.get(key, (0.0, 0.0)) for key in ["x", "y", "z", "roll", "pitch", "yaw"]]
         ranges = torch.tensor(range_list, device=self.device)
@@ -270,14 +275,44 @@ class MotionCommand(CommandTerm):
         joint_pos[env_ids] = torch.clip(
             joint_pos[env_ids], soft_joint_pos_limits[:, :, 0], soft_joint_pos_limits[:, :, 1]
         )
-        self.robot.write_joint_state_to_sim(joint_pos[env_ids], joint_vel[env_ids], env_ids=env_ids)
-        self.robot.write_root_state_to_sim(
-            torch.cat([root_pos[env_ids], root_ori[env_ids], root_lin_vel[env_ids], root_ang_vel[env_ids]], dim=-1),
-            env_ids=env_ids,
-        )
+        # self.robot.write_joint_state_to_sim(joint_pos[env_ids], joint_vel[env_ids], env_ids=env_ids)
+        # self.robot.write_root_state_to_sim(
+        #     torch.cat([root_pos[env_ids], root_ori[env_ids], root_lin_vel[env_ids], root_ang_vel[env_ids]], dim=-1),
+        #     env_ids=env_ids,
+        # )
 
     def _update_command(self):
+        ## 计算关键帧跟踪误差
+        error_orien = quat_error_magnitude(self.anchor_quat_w, self.robot_anchor_quat_w) ** 2
+        error_anchor_orien_exp = torch.exp(-error_orien / 0.4**2)
+
+        error_body_orien = quat_error_magnitude(self.body_quat_relative_w, self.robot_body_quat_w) ** 2
+        error_body_orien_exp = torch.exp(-error_body_orien.mean(-1) / 0.4**2)
+        error_joint_pos_l2 = torch.sum(torch.square(self.robot_joint_pos - self.joint_pos), dim=-1)
+        error_joint_vel_l2 = torch.sum(torch.square(self.robot_joint_vel - self.joint_vel), dim=-1)
+
+        error = error_anchor_orien_exp + 0.8*error_body_orien_exp + 0.3*error_joint_pos_l2 + 0.005*error_joint_vel_l2
+
+        # print(error, error_anchor_orien_exp, error_body_orien_exp, error_joint_pos_l2, error_joint_vel_l2) 
+        print("error = ", error) 
+        print("error_anchor_orien_exp = ", error_anchor_orien_exp) 
+        print("error_body_orien_exp = ", error_body_orien_exp) 
+        print("error_joint_pos_l2 = ", error_joint_pos_l2) 
+        print("error_joint_vel_l2 = ", error_joint_vel_l2) 
+                
+        # --- IGNORE ---
+
+        env_ids_error = torch.where(error < 1)[0]
+        print("env_ids_error = ", env_ids_error) 
+        # print("self.time_steps = ", self.time_steps)  # --- IGNORE ---
+        # print("env_ids_error = ", env_ids_error)  # --- IGNORE ---
+
+        # self.time_steps[env_ids_error] += 1
+        ##
+
+
         self.time_steps += 1
+        print("self.time_steps = ", self.time_steps, self.motion.time_step_total)  # --- IGNORE ---
         env_ids = torch.where(self.time_steps >= self.motion.time_step_total)[0]
         self._resample_command(env_ids)
 

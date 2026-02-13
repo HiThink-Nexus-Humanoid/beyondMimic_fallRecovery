@@ -7,7 +7,7 @@
     --output_file ./motions/dance1_subject2.npz --output_fps 50 --headless
 
 
-    python ths_t1/offline_csv_to_npz.py --input_file data/fall_recovery.csv --input_fps 1 --frame_range 1 6 \
+    python ths_23dof/offline_csv_to_npz.py --input_file data/fall_recovery.csv --input_fps 1 --frame_range 1 6 \
     --output_file ./motions/fall_recovery.npz --output_fps 1 --headless
 
     python ths_t1/offline_csv_to_npz.py --input_file data/0007_Walking001_stageii.csv --input_fps 30 --frame_range 122 722 \
@@ -66,8 +66,7 @@ from isaaclab.utils.math import axis_angle_from_quat, quat_conjugate, quat_mul, 
 ##
 # Pre-defined configs
 ##
-from ths_23dof import THS_23D_CFG
-# from whole_body_tracking.robots.ths_23dof import THS_T1_CYLINDER_CFG
+from whole_body_tracking.robots.ths_23dof import THS_23DOF_CFG
 
 
 @configclass
@@ -87,7 +86,7 @@ class ReplayMotionsSceneCfg(InteractiveSceneCfg):
     )
 
     # articulation
-    robot: ArticulationCfg = THS_23D_CFG.replace(prim_path="{ENV_REGEX_NS}/Robot")
+    robot: ArticulationCfg = THS_23DOF_CFG.replace(prim_path="{ENV_REGEX_NS}/Robot")
 
 
 class MotionLoader:
@@ -102,7 +101,7 @@ class MotionLoader:
         self.motion_file = motion_file
         self.input_fps = input_fps
         self.output_fps = output_fps
-        self.input_dt = 1.0 / self.input_fps
+        self.input_dt = 1.0 / self.input_fps * 100 #增加100倍的播放频率
         self.output_dt = 1.0 / self.output_fps
         self.current_idx = 0
         self.device = device
@@ -312,7 +311,7 @@ def run_simulator(sim: sim_utils.SimulationContext, scene: InteractiveScene, joi
         # body_names = robot.body_names
         # print("Body names in the robot:", body_names)
         body_names = robot.body_names
-        print("Body names in the robot:", body_names)
+        # print("Body names in the robot:", body_names)
 
         # # 打印每个body的位置和姿态
         # for i, body_name in enumerate(body_names):
