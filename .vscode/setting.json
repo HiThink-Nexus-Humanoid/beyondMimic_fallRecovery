@@ -1,0 +1,44 @@
+{
+    "python.defaultInterpreterPath": "/home/haitao/anaconda3/envs/beyond_mimic/bin/python",
+    
+    // 尝试添加更具体的路径
+    "python.analysis.extraPaths": [
+        "/home/haitao/ISAAC/IsaacLab-2.1.0/source",  // 添加根目录
+        "/home/haitao/ISAAC/IsaacLab-2.1.0/source/isaaclab",
+        "/home/haitao/ISAAC/IsaacLab-2.1.0/source/isaaclab/utils",  // 如果utils是子目录
+        "/home/haitao/ISAAC/IsaacLab-2.1.0/source/isaaclab_assets",
+        "/home/haitao/ISAAC/IsaacLab-2.1.0/source/isaaclab_mimic",
+        "/home/haitao/ISAAC/IsaacLab-2.1.0/source/isaaclab_rl",
+        "/home/haitao/ISAAC/IsaacLab-2.1.0/source/isaaclab_tasks"
+    ],
+    
+    // 添加这些配置
+    "python.analysis.autoImportCompletions": true,
+    "python.analysis.completeFunctionParens": true,
+    
+    // 确保使用Pylance（而不是Jedi）
+    "python.languageServer": "Pylance",
+    "python.analysis.typeCheckingMode": "basic",
+    "python.analysis.diagnosticMode": "workspace",
+    
+    // 关闭可能导致冲突的检查
+    "python.linting.pylintEnabled": false,
+    "python.linting.enabled": false
+}
+
+
+
+// {
+//     "python.defaultInterpreterPath": "/home/haitao/anaconda3/envs/beyond_mimic/bin/python",
+//     "python.analysis.extraPaths": [
+//         "/home/haitao/ISAAC/IsaacLab-2.1.0/source/isaaclab",
+//         "/home/haitao/ISAAC/IsaacLab-2.1.0/source/isaaclab_assets",
+//         "/home/haitao/ISAAC/IsaacLab-2.1.0/source/isaaclab_mimic",
+//         "/home/haitao/ISAAC/IsaacLab-2.1.0/source/isaaclab_rl",
+//         "/home/haitao/ISAAC/IsaacLab-2.1.0/source/isaaclab_tasks",
+//     ],
+//     "python.analysis.autoSearchPaths": true,
+//     "python.analysis.indexing": true,
+//     "python.linting.enabled": true,
+//     "python.linting.pylintEnabled": true
+// }

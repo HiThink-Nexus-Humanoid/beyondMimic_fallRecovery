@@ -111,7 +111,7 @@ class MotionCommand(CommandTerm):
 
     @property
     def body_pos_w(self) -> torch.Tensor:
-        # print("self.time_steps = ", self.time_steps, self.motion.time_step_total)  # --- IGNORE ---
+        # print("333self.time_steps = ", self.time_steps, self.motion.time_step_total)  # --- IGNORE ---
         # print("self.motion.body_pos_w[self.time_steps] = ", self.motion.body_pos_w[self.time_steps])
         # print("self.motion.body_pos_w = ", self.motion.body_pos_w)
         return self.motion.body_pos_w[self.time_steps] + self._env.scene.env_origins[:, None, :]
@@ -244,6 +244,7 @@ class MotionCommand(CommandTerm):
         self.metrics["sampling_top1_bin"][:] = imax.float() / self.bin_count
 
     def _resample_command(self, env_ids: Sequence[int]):
+        print("11env_ids = ", env_ids)  # --- IGNORE ---
         if len(env_ids) == 0:
             return
         self._adaptive_sampling(env_ids)
@@ -280,6 +281,7 @@ class MotionCommand(CommandTerm):
         #     torch.cat([root_pos[env_ids], root_ori[env_ids], root_lin_vel[env_ids], root_ang_vel[env_ids]], dim=-1),
         #     env_ids=env_ids,
         # )
+        # print("22env_ids = ", env_ids)  # --- IGNORE ---
 
     def _update_command(self):
         ## 计算关键帧跟踪误差
@@ -293,28 +295,33 @@ class MotionCommand(CommandTerm):
 
         error = error_anchor_orien_exp + 0.8*error_body_orien_exp + 0.3*error_joint_pos_l2 + 0.005*error_joint_vel_l2
 
-        # print(error, error_anchor_orien_exp, error_body_orien_exp, error_joint_pos_l2, error_joint_vel_l2) 
         print("error = ", error) 
-        print("error_anchor_orien_exp = ", error_anchor_orien_exp) 
-        print("error_body_orien_exp = ", error_body_orien_exp) 
-        print("error_joint_pos_l2 = ", error_joint_pos_l2) 
-        print("error_joint_vel_l2 = ", error_joint_vel_l2) 
+        # print("error_anchor_orien_exp = ", error_anchor_orien_exp) 
+        # print("error_body_orien_exp = ", error_body_orien_exp) 
+        # print("error_joint_pos_l2 = ", error_joint_pos_l2) 
+        # print("error_joint_vel_l2 = ", error_joint_vel_l2) 
                 
         # --- IGNORE ---
 
         env_ids_error = torch.where(error < 1)[0]
-        print("env_ids_error = ", env_ids_error) 
+        print("env_ids_error = ", env_ids_error)
         # print("self.time_steps = ", self.time_steps)  # --- IGNORE ---
-        # print("env_ids_error = ", env_ids_error)  # --- IGNORE ---
 
-        # self.time_steps[env_ids_error] += 1
+        self.time_steps[env_ids_error] += 1
+        print("22 self.time_steps = ", self.time_steps, ";     self.motion.time_step_total = ", self.motion.time_step_total) 
+        env_ids = torch.where(self.time_steps >= self.motion.time_step_total)[0]
+        print("00env_ids = ", env_ids)  # --- IGNORE ---
+        self._resample_command(env_ids)
+        # print("self.time_steps = ", self.time_steps, ";     self.motion.time_step_total = ", self.motion.time_step_total)  # --- IGNORE ---
         ##
 
-
-        self.time_steps += 1
-        print("self.time_steps = ", self.time_steps, self.motion.time_step_total)  # --- IGNORE ---
-        env_ids = torch.where(self.time_steps >= self.motion.time_step_total)[0]
-        self._resample_command(env_ids)
+        # # self.time_steps += 1
+        # print("22 self.time_steps = ", self.time_steps, ";     self.motion.time_step_total = ", self.motion.time_step_total) 
+        # env_ids = torch.where(self.time_steps >= self.motion.time_step_total)[0]
+        # print("00env_ids = ", env_ids)  # --- IGNORE ---
+        # self._resample_command(env_ids)
+        # print("44env_ids = ", env_ids)  # --- IGNORE ---
+        # print("44 self.time_steps = ", self.time_steps, ";     self.motion.time_step_total = ", self.motion.time_step_total) 
 
         anchor_pos_w_repeat = self.anchor_pos_w[:, None, :].repeat(1, len(self.cfg.body_names), 1)
         anchor_quat_w_repeat = self.anchor_quat_w[:, None, :].repeat(1, len(self.cfg.body_names), 1)
@@ -324,10 +331,12 @@ class MotionCommand(CommandTerm):
         delta_pos_w = robot_anchor_pos_w_repeat
         delta_pos_w[..., 2] = anchor_pos_w_repeat[..., 2]
         delta_ori_w = yaw_quat(quat_mul(robot_anchor_quat_w_repeat, quat_inv(anchor_quat_w_repeat)))
+        print("55 self.time_steps = ", self.time_steps, ";     self.motion.time_step_total = ", self.motion.time_step_total) 
 
         self.body_quat_relative_w = quat_mul(delta_ori_w, self.body_quat_w)
         self.body_pos_relative_w = delta_pos_w + quat_apply(delta_ori_w, self.body_pos_w - anchor_pos_w_repeat)
 
+        print("66 self.time_steps = ", self.time_steps, ";     self.motion.time_step_total = ", self.motion.time_step_total) 
         self.bin_failed_count = (
             self.cfg.adaptive_alpha * self._current_bin_failed + (1 - self.cfg.adaptive_alpha) * self.bin_failed_count
         )

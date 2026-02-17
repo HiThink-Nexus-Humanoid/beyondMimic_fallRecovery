@@ -1,0 +1,30 @@
+{
+    // Use IntelliSense to learn about possible attributes.
+    // Hover to view descriptions of existing attributes.
+    // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
+    "version": "0.2.0",
+    "configurations": [
+
+
+        {
+            "name": "Python Debugger: Current File with Arguments",
+            "type": "debugpy",
+            "request": "launch",
+            "program": "${workspaceFolder}/scripts/rsl_rl/train.py",
+            "console": "integratedTerminal",
+            "args": [
+                "--task", "Tracking-Flat-THS-v0",
+                "--registry_name", "htzhouhit-ths-org/wandb-registry-motions/walking",
+                "--logger", "wandb",
+                "--log_project_name", "motion-walking",
+                "--run_name", "fall_recovery",
+                "--num_envs", "10",
+            ],
+            "python": "/home/haitao/anaconda3/envs/beyond_mimic/bin/python",
+            // "env":{
+            //     "LD_LIBRARY_PATH": "/home/zht/miniconda3/envs/fallrecovery/lib"
+            // }
+
+        }
+    ]
+}
