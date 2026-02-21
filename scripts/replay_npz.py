@@ -83,6 +83,11 @@ def run_simulator(sim: sim_utils.SimulationContext, scene: InteractiveScene):
         torch.tensor([0], dtype=torch.long, device=sim.device),
         sim.device,
     )
+
+    print("motion.time_step_total = ", motion.time_step_total)
+    print("motion.body_pos_w.shape = ", motion.body_pos_w.shape)
+    print("motion.body_pos_w = ", motion.body_pos_w)
+
     time_steps = torch.zeros(scene.num_envs, dtype=torch.long, device=sim.device)
 
     # Simulation loop
