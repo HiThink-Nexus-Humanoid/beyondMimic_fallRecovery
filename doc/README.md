@@ -27,18 +27,31 @@ python scripts/rsl_rl/train.py --task=Tracking-Flat-THS-v0 --registry_name htzho
 
 
 python scripts/rsl_rl/train.py --task=Tracking-Flat-THS-v0 --registry_name htzhouhit-ths-org/wandb-registry-motions/fall_recovery \
---headless --logger wandb --log_project_name motion-fall_recovery --run_name fall_recovery --num_envs=4096
+--headless --logger wandb --log_project_name motion-fall_recovery --run_name fall_recovery2 --num_envs=4096
 
 python scripts/rsl_rl/train.py --task=Tracking-Flat-THS-v0 --registry_name htzhouhit-ths-org/wandb-registry-motions/fall_recovery --logger wandb --log_project_name motion-fall_recovery --run_name fall_recovery --num_envs=4096
 
+
+
+
+python scripts/rsl_rl/train.py \
+  --task=Tracking-Flat-THS-v0 \
+  --registry_name htzhouhit-ths-org/wandb-registry-motions/fall_recovery \
+  --logger wandb \
+  --log_project_name motion-fall_recovery \
+  --run_name fall_recovery5 \
+  --num_envs=4096 \
+  --resume=True \
+  --load_run fall_recovery5 \
+  --checkpoint last
 ```
 
 
 ### 播放
 ```bash
-python scripts/rsl_rl/play.py --task=Tracking-Flat-THS-v0 --num_envs=2 --wandb_path={wandb-run-path}
+python scripts/rsl_rl/play.py --task=Tracking-Flat-THS-v0 --num_envs=2 --wandb_path={wandb-run-path}   ###在网页上复制
 
-python scripts/rsl_rl/play.py --task=Tracking-Flat-THS-v0 --num_envs=2 --wandb_path=htzhouhit-ths/motion_walk/a0bfepu4
+python scripts/rsl_rl/play.py --task=Tracking-Flat-THS-v0 --num_envs=4096 --wandb_path=htzhouhit-ths/motion-fall_recovery/hz5x41eg
 ```
 
 

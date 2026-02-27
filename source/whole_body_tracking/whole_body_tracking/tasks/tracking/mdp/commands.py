@@ -29,6 +29,8 @@ if TYPE_CHECKING:
 
 class MotionLoader:
     def __init__(self, motion_file: str, body_indexes: Sequence[int], device: str = "cpu"):
+        print("motion_file = ", motion_file)
+        print("body_indexes = ", body_indexes)
         assert os.path.isfile(motion_file), f"Invalid file path: {motion_file}"
         data = np.load(motion_file)
         self.fps = data["fps"]
@@ -42,6 +44,8 @@ class MotionLoader:
         self.time_step_total = self.joint_pos.shape[0]
         print("self.time_step_total = ", self.time_step_total)
         print("self._body_indexes = ", self._body_indexes)
+        print("self.joint_pos = ", self.joint_pos)
+        print("self._body_pos_w = ", self._body_pos_w)
 
     @property
     def body_pos_w(self) -> torch.Tensor:
@@ -538,7 +542,7 @@ class MotionCommand_FallRecovery(CommandTerm):
         self.metrics["sampling_top1_bin"][:] = imax.float() / self.bin_count
 
     def _resample_command(self, env_ids: Sequence[int]):
-        print("11env_ids = ", env_ids)  # --- IGNORE ---
+        # print("11env_ids = ", env_ids)  # --- IGNORE ---
         if len(env_ids) == 0:
             return
 
@@ -546,31 +550,47 @@ class MotionCommand_FallRecovery(CommandTerm):
 
     def _update_command(self):
         ## 计算关键帧跟踪误差
-        error_orien = quat_error_magnitude(self.anchor_quat_w, self.robot_anchor_quat_w) ** 2
-        error_anchor_orien_exp = torch.exp(-error_orien / 0.4**2)
+        error_anchor_orien = quat_error_magnitude(self.anchor_quat_w, self.robot_anchor_quat_w) ** 2
+        error_anchor_orien_exp = torch.exp(-error_anchor_orien / 0.4**2)
 
         error_body_orien = quat_error_magnitude(self.body_quat_relative_w, self.robot_body_quat_w) ** 2
         error_body_orien_exp = torch.exp(-error_body_orien.mean(-1) / 0.4**2)
         error_joint_pos_l2 = torch.sum(torch.square(self.robot_joint_pos - self.joint_pos), dim=-1)
         error_joint_vel_l2 = torch.sum(torch.square(self.robot_joint_vel - self.joint_vel), dim=-1)
 
-        error = error_anchor_orien_exp + 0.8*error_body_orien_exp + 0.3*error_joint_pos_l2 + 0.005*error_joint_vel_l2
+        error = error_anchor_orien + 0.3*error_body_orien_exp + 0.3*error_joint_pos_l2 
+        # + 0.005*error_joint_vel_l2
+
+        # print("error_anchor_orien = ", error_anchor_orien) 
+        # print("error_anchor_orien_exp = ", error_anchor_orien_exp) 
+        # print("self.anchor_quat_w = ", self.anchor_quat_w) 
+        # print("self.body_quat_relative_w = ", self.body_quat_relative_w) 
+        # print("error_body_orien_exp = ", error_body_orien_exp) 
+        # print("error_body_orien = ", error_body_orien) 
 
         print("error = ", error) 
-        print("error_anchor_orien_exp = ", error_anchor_orien_exp) 
+        print("error_anchor_orien = ", error_anchor_orien) 
         print("error_body_orien_exp = ", error_body_orien_exp) 
         print("error_joint_pos_l2 = ", error_joint_pos_l2) 
         print("error_joint_vel_l2 = ", error_joint_vel_l2) 
+
+        # print("error = ", error) 
+        # print("error_anchor_orien_exp = ", error_anchor_orien_exp) 
+        # print("error_body_orien_exp = ", error_body_orien_exp) 
+        # print("error_joint_pos_l2 = ", error_joint_pos_l2) 
+        # print("error_joint_vel_l2 = ", error_joint_vel_l2) 
         
-        env_ids_error = torch.where(error < 2)[0]
+        env_ids_error = torch.where(error < 8)[0]
         print("env_ids_error = ", env_ids_error)
         # print("self.time_steps = ", self.time_steps)  # --- IGNORE ---
 
+        print("00self.time_steps = ", self.time_steps, ";     self.motion.time_step_total = ", self.motion.time_step_total) 
         self.time_steps[env_ids_error] += 1
         print("self.time_steps = ", self.time_steps, ";     self.motion.time_step_total = ", self.motion.time_step_total) 
         env_ids = torch.where(self.time_steps >= self.motion.time_step_total)[0]
+        self.time_steps[env_ids] = self.motion.time_step_total - 1
         print("00env_ids = ", env_ids)  # --- IGNORE ---
-        self._resample_command(env_ids)
+        # self._resample_command(env_ids)
         # print("self.time_steps = ", self.time_steps, ";     self.motion.time_step_total = ", self.motion.time_step_total)  # --- IGNORE ---
         ##
 
