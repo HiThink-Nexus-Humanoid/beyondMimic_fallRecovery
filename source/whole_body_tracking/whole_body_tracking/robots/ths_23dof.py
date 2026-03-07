@@ -30,11 +30,13 @@ THS_23DOF_CFG = ArticulationCfg(
         # ),
     ),
     init_state=ArticulationCfg.InitialStateCfg(
+        # pos=(0.0, 0.0, 0.9),
         pos=(0.0, 0.0, 0.2),
-        rot=(0,1,0,-1),  # (w,x,y,z) 趴姿
-        # rot=(0,1,0,1),  # (w,x,y,z) 躺姿
-        # rot=(1,0,0,0),  # (w,x,y,z) 站姿
-        joint_pos={      
+        # rot=(1,0,0,0),  # (w,x,y,z) 站姿 正
+        # rot=(0.707,0,0,0.707),  # (w,x,y,z) 站姿 面向Y+
+        # rot=(0.707,0,-0.707,0),  # (w,x,y,z) 躺姿
+        rot=(0.707,0,0.707,0),  # (w,x,y,z) 趴姿
+        joint_pos={   
                     "left_hip_pitch_joint": 0.3,                        
                     "left_hip_roll_joint": 0.0,          
                     "left_hip_yaw_joint": 0.0,           

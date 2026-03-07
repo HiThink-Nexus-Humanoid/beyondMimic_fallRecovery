@@ -26,6 +26,8 @@ def motion_global_anchor_position_error_exp(env: ManagerBasedRLEnv, command_name
 def motion_global_anchor_orientation_error_exp(env: ManagerBasedRLEnv, command_name: str, std: float) -> torch.Tensor:
     command: MotionCommand = env.command_manager.get_term(command_name)
     error = quat_error_magnitude(command.anchor_quat_w, command.robot_anchor_quat_w) ** 2
+    print("command.anchor_quat_w = ", command.anchor_quat_w[:20], command.anchor_quat_w[-20:])
+    print("command.robot_anchor_quat_w = ", command.robot_anchor_quat_w[:20], command.robot_anchor_quat_w[-20:])
     return torch.exp(-error / std**2)
 
 

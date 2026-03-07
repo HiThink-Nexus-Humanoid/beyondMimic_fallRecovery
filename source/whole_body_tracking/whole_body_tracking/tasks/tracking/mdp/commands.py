@@ -64,7 +64,7 @@ class MotionLoader:
         return self._body_ang_vel_w[:, self._body_indexes]
 
 
-class MotionCommand(CommandTerm):
+class MotionCommand22(CommandTerm):
     cfg: MotionCommandCfg
 
     def __init__(self, cfg: MotionCommandCfg, env: ManagerBasedRLEnv):
@@ -356,7 +356,7 @@ class MotionCommand(CommandTerm):
 
 
 
-class MotionCommand_FallRecovery(CommandTerm):
+class MotionCommand(CommandTerm):
     cfg: MotionCommandCfg
 
     def __init__(self, cfg: MotionCommandCfg, env: ManagerBasedRLEnv):
@@ -365,6 +365,13 @@ class MotionCommand_FallRecovery(CommandTerm):
         self.robot: Articulation = env.scene[cfg.asset_name]
         self.robot_anchor_body_index = self.robot.body_names.index(self.cfg.anchor_body_name)
         self.motion_anchor_body_index = self.cfg.body_names.index(self.cfg.anchor_body_name)
+        # print("self.cfg.anchor_body_name = ", self.cfg.anchor_body_name)
+        # print("self.cfg.body_names = ", self.cfg.body_names)
+        # self.cfg.anchor_body_name =  torso_link
+        # self.cfg.body_names =  ['base_link', 'left_hip_roll_link', 'left_knee_link', 'left_ankle_roll_link', 'right_hip_roll_link', 
+        #                         'right_knee_link', 'right_ankle_roll_link', 'torso_link', 'left_shoulder_roll_link', 'left_elbow_link', 
+        #                         'left_wrist_roll_link', 'right_shoulder_roll_link', 'right_elbow_link', 'right_wrist_roll_link']
+
         self.body_indexes = torch.tensor(
             self.robot.find_bodies(self.cfg.body_names, preserve_order=True)[0], dtype=torch.long, device=self.device
         )
@@ -432,6 +439,10 @@ class MotionCommand_FallRecovery(CommandTerm):
 
     @property
     def anchor_quat_w(self) -> torch.Tensor:
+        # print("90self.time_steps = ", self.time_steps)
+        # print("90self.motion_anchor_body_index = ", self.motion_anchor_body_index)
+        # print("90self.motion.body_quat_w[self.time_steps, self.motion_anchor_body_index] = ", self.motion.body_quat_w[self.time_steps, self.motion_anchor_body_index])
+        # print("90self.motion.body_quat_w = ", self.motion.body_quat_w)
         return self.motion.body_quat_w[self.time_steps, self.motion_anchor_body_index]
 
     @property
@@ -558,7 +569,8 @@ class MotionCommand_FallRecovery(CommandTerm):
         error_joint_pos_l2 = torch.sum(torch.square(self.robot_joint_pos - self.joint_pos), dim=-1)
         error_joint_vel_l2 = torch.sum(torch.square(self.robot_joint_vel - self.joint_vel), dim=-1)
 
-        error = error_anchor_orien + 0.3*error_body_orien_exp + 0.3*error_joint_pos_l2 
+        error = error_anchor_orien + error_body_orien_exp
+        # error = error_anchor_orien + 0.3*error_body_orien_exp + 0.3*error_joint_pos_l2 
         # + 0.005*error_joint_vel_l2
 
         # print("error_anchor_orien = ", error_anchor_orien) 
@@ -568,11 +580,15 @@ class MotionCommand_FallRecovery(CommandTerm):
         # print("error_body_orien_exp = ", error_body_orien_exp) 
         # print("error_body_orien = ", error_body_orien) 
 
-        print("error = ", error) 
-        print("error_anchor_orien = ", error_anchor_orien) 
-        print("error_body_orien_exp = ", error_body_orien_exp) 
-        print("error_joint_pos_l2 = ", error_joint_pos_l2) 
-        print("error_joint_vel_l2 = ", error_joint_vel_l2) 
+        # print("error = ", error) 
+        # print("error_anchor_orien = ", error_anchor_orien) 
+        # print("error_body_orien_exp = ", error_body_orien_exp) 
+        # print("error_joint_pos_l2 = ", error_joint_pos_l2) 
+        # print("error_joint_vel_l2 = ", error_joint_vel_l2) 
+
+        print("error = ", error[:20], error[-20:])
+        print("error_anchor_orien = ", error_anchor_orien[:20], error[-20:])
+        print("error_body_orien_exp = ", error_body_orien_exp[:20], error[-20:])
 
         # print("error = ", error) 
         # print("error_anchor_orien_exp = ", error_anchor_orien_exp) 
@@ -580,16 +596,19 @@ class MotionCommand_FallRecovery(CommandTerm):
         # print("error_joint_pos_l2 = ", error_joint_pos_l2) 
         # print("error_joint_vel_l2 = ", error_joint_vel_l2) 
         
-        env_ids_error = torch.where(error < 8)[0]
-        print("env_ids_error = ", env_ids_error)
+        env_ids_error = torch.where(error < 1)[0]
+        print("env_ids_error = ", env_ids_error[:20], env_ids_error[-20:])
         # print("self.time_steps = ", self.time_steps)  # --- IGNORE ---
 
-        print("00self.time_steps = ", self.time_steps, ";     self.motion.time_step_total = ", self.motion.time_step_total) 
+        # print("00self.time_steps = ", self.time_steps, ";     self.motion.time_step_total = ", self.motion.time_step_total) 
+
+        print("00self.time_steps = ", self.time_steps[:20], self.time_steps[-20:],  self.motion.time_step_total)
         self.time_steps[env_ids_error] += 1
-        print("self.time_steps = ", self.time_steps, ";     self.motion.time_step_total = ", self.motion.time_step_total) 
+        print("11self.time_steps = ", self.time_steps[:20], self.time_steps[-20:],  self.motion.time_step_total)
+        # print("self.time_steps = ", self.time_steps, ";     self.motion.time_step_total = ", self.motion.time_step_total) 
         env_ids = torch.where(self.time_steps >= self.motion.time_step_total)[0]
         self.time_steps[env_ids] = self.motion.time_step_total - 1
-        print("00env_ids = ", env_ids)  # --- IGNORE ---
+        print("00env_ids = ", env_ids[:20], env_ids[-20:])
         # self._resample_command(env_ids)
         # print("self.time_steps = ", self.time_steps, ";     self.motion.time_step_total = ", self.motion.time_step_total)  # --- IGNORE ---
         ##
@@ -673,7 +692,7 @@ class MotionCommand_FallRecovery(CommandTerm):
 class MotionCommandCfg(CommandTermCfg):
     """Configuration for the motion command."""
 
-    class_type: type = MotionCommand_FallRecovery
+    class_type: type = MotionCommand
 
     asset_name: str = MISSING
 
