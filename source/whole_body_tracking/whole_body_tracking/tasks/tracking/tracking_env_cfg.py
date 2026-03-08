@@ -204,11 +204,11 @@ class RewardsCfg:
         weight=0.5,
         params={"command_name": "motion", "std": 0.4},
     )
-    # motion_body_pos = RewTerm(
-    #     func=mdp.motion_relative_body_position_error_exp,
-    #     weight=1.0,
-    #     params={"command_name": "motion", "std": 0.3},
-    # )
+    motion_body_pos = RewTerm(
+        func=mdp.motion_relative_body_position_error_exp,
+        weight=1.0,
+        params={"command_name": "motion", "std": 0.3},
+    )
     motion_body_ori = RewTerm(
         func=mdp.motion_relative_body_orientation_error_exp,
         weight=1.0,
@@ -287,8 +287,10 @@ class CurriculumCfg:
 class TrackingEnvCfg(ManagerBasedRLEnvCfg):
     """Configuration for the locomotion velocity-tracking environment."""
 
-    # Scene settings
+    # Scene settingss
     scene: MySceneCfg = MySceneCfg(num_envs=4096, env_spacing=2.5)
+    # print("scene.robot.data.joint_names: ", scene.robot.data.joint_names)
+
     # Basic settings
     observations: ObservationsCfg = ObservationsCfg()
     actions: ActionsCfg = ActionsCfg()

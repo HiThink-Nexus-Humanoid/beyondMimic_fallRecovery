@@ -565,20 +565,18 @@ class MotionCommand(CommandTerm):
         error_anchor_orien_exp = torch.exp(-error_anchor_orien / 0.4**2)
 
         error_body_orien = quat_error_magnitude(self.body_quat_relative_w, self.robot_body_quat_w) ** 2
+        error_body_orien_mse = torch.sum(error_body_orien, dim=-1)/14
+        # print("error_body_orien.shape = ", error_body_orien.shape)
         error_body_orien_exp = torch.exp(-error_body_orien.mean(-1) / 0.4**2)
-        error_joint_pos_l2 = torch.sum(torch.square(self.robot_joint_pos - self.joint_pos), dim=-1)
+        # print("error_body_orien_exp.shape = ", error_body_orien_exp.shape)
+        # error_joint_pos_l2 = torch.sum(torch.square(self.robot_joint_pos - self.joint_pos), dim=-1)
+        error_joint_pos_mse = torch.sum(torch.square(self.robot_joint_pos - self.joint_pos), dim=-1)/23
         error_joint_vel_l2 = torch.sum(torch.square(self.robot_joint_vel - self.joint_vel), dim=-1)
 
-        error = error_anchor_orien + error_body_orien_exp
+        error = error_anchor_orien + error_body_orien_mse * 0.8 + error_joint_pos_mse * 0.8
+        # error =          0.2     +          0.1 * 0.8         +                 0.1 * 0.8
         # error = error_anchor_orien + 0.3*error_body_orien_exp + 0.3*error_joint_pos_l2 
         # + 0.005*error_joint_vel_l2
-
-        # print("error_anchor_orien = ", error_anchor_orien) 
-        # print("error_anchor_orien_exp = ", error_anchor_orien_exp) 
-        # print("self.anchor_quat_w = ", self.anchor_quat_w) 
-        # print("self.body_quat_relative_w = ", self.body_quat_relative_w) 
-        # print("error_body_orien_exp = ", error_body_orien_exp) 
-        # print("error_body_orien = ", error_body_orien) 
 
         # print("error = ", error) 
         # print("error_anchor_orien = ", error_anchor_orien) 
@@ -587,16 +585,13 @@ class MotionCommand(CommandTerm):
         # print("error_joint_vel_l2 = ", error_joint_vel_l2) 
 
         print("error = ", error[:20], error[-20:])
-        print("error_anchor_orien = ", error_anchor_orien[:20], error[-20:])
-        print("error_body_orien_exp = ", error_body_orien_exp[:20], error[-20:])
-
-        # print("error = ", error) 
-        # print("error_anchor_orien_exp = ", error_anchor_orien_exp) 
-        # print("error_body_orien_exp = ", error_body_orien_exp) 
-        # print("error_joint_pos_l2 = ", error_joint_pos_l2) 
-        # print("error_joint_vel_l2 = ", error_joint_vel_l2) 
+        print("error_anchor_orien = ", error_anchor_orien[:20], error_anchor_orien[-20:])
+        print("error_body_orien_mse = ", error_body_orien_mse[:20], error_body_orien_mse[-20:])
+        print("error_joint_pos_mse = ", error_joint_pos_mse[:20], error_joint_pos_mse[-20:])
+        print("self.joint_pos = ", self.joint_pos[:2], self.joint_pos[-2:])
+        print("self.robot_joint_pos = ", self.robot_joint_pos[:2], self.robot_joint_pos[-2:])
         
-        env_ids_error = torch.where(error < 1)[0]
+        env_ids_error = torch.where(error < 0.36)[0]
         print("env_ids_error = ", env_ids_error[:20], env_ids_error[-20:])
         # print("self.time_steps = ", self.time_steps)  # --- IGNORE ---
 

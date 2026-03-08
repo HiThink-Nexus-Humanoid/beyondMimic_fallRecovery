@@ -14,14 +14,14 @@ class ThsFlatEnvCfg(TrackingEnvCfg):
         self.actions.joint_pos.scale = THS_ACTION_SCALE
         self.commands.motion.anchor_body_name = "torso_link"
         self.commands.motion.body_names = [
-            "base_link",
+            "base_link", #0
             "left_hip_roll_link",
             "left_knee_link",
             "left_ankle_roll_link",
             "right_hip_roll_link",
             "right_knee_link",
             "right_ankle_roll_link",
-            "torso_link",
+            "torso_link", #7
             "left_shoulder_roll_link",
             "left_elbow_link",
             "left_wrist_roll_link",
