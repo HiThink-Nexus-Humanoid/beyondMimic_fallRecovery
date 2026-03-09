@@ -82,3 +82,10 @@ def feet_contact_time(env: ManagerBasedRLEnv, sensor_cfg: SceneEntityCfg, thresh
     last_contact_time = contact_sensor.data.last_contact_time[:, sensor_cfg.body_ids]
     reward = torch.sum((last_contact_time < threshold) * first_air, dim=-1)
     return reward
+
+
+def motion_joint_position_error_l2(
+    env: ManagerBasedRLEnv, command_name: str) -> torch.Tensor:
+    command: MotionCommand = env.command_manager.get_term(command_name)   
+
+    return -torch.sum(torch.square(command.joint_pos - command.robot_joint_pos), dim=-1)

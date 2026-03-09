@@ -244,6 +244,13 @@ class RewardsCfg:
     #     },
     # )
 
+    ################
+    motion_joint_pos_error_l2 = RewTerm(
+        func=mdp.motion_joint_position_error_l2,
+        weight=1.0,
+        params={"command_name": "motion"},
+    )
+
 
 @configclass
 class TerminationsCfg:
