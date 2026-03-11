@@ -2,7 +2,10 @@ import numpy as np
 
 # 替换为你的NPZ文件路径
 # npz_file = "fall_recovery.npz"
-npz_file = "motion.npz"
+# npz_file = "motion.npz"
+# npz_file = "fall_recovery_traj.npz"
+npz_file = "fall_recovery_traj_fast.npz"
+
 
 # 加载NPZ文件
 data = np.load(npz_file)

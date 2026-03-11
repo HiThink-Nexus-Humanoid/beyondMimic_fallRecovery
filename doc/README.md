@@ -6,6 +6,8 @@ python scripts/csv_to_npz.py --input_file scripts/data/0007_Walking001_stageii.c
 python scripts/csv_to_npz.py --input_file scripts/data/0005_Jogging001_stageii.csv --input_fps 30 --output_name jogging --headless
 
 python scripts/csv_to_npz.py --input_file scripts/data/fall_recovery.csv --input_fps 1  --output_fps 1 --output_name fall_recovery --headless
+
+python scripts/csv_to_npz.py --input_file scripts/data/fall_recovery.csv --input_fps 1  --output_fps 60 --output_name fall_recovery_traj --headless
 ```
 
 
