@@ -42,7 +42,7 @@ class MotionLoader:
         self._body_ang_vel_w = torch.tensor(data["body_ang_vel_w"], dtype=torch.float32, device=device)
         self._body_indexes = body_indexes
         self.time_step_total = self.joint_pos.shape[0]
-        print("data = ", data)
+        print("data = ", self.time_step_total)
         print("self.time_step_total = ", self.time_step_total)
         print("self._body_indexes = ", self._body_indexes)
         print("self.joint_pos = ", self.joint_pos)
@@ -65,7 +65,7 @@ class MotionLoader:
         return self._body_ang_vel_w[:, self._body_indexes]
 
 
-class MotionCommand22(CommandTerm):
+class MotionCommand(CommandTerm):
     cfg: MotionCommandCfg
 
     def __init__(self, cfg: MotionCommandCfg, env: ManagerBasedRLEnv):
@@ -357,7 +357,7 @@ class MotionCommand22(CommandTerm):
 
 
 
-class MotionCommand(CommandTerm):
+class MotionCommand22(CommandTerm):
     cfg: MotionCommandCfg
 
     def __init__(self, cfg: MotionCommandCfg, env: ManagerBasedRLEnv):

@@ -36,6 +36,11 @@ python scripts/rsl_rl/train.py --task=Tracking-Flat-THS-v0 --registry_name htzho
 
 
 
+python scripts/rsl_rl/train.py --task=Tracking-Flat-THS-v0 --registry_name htzhouhit-ths-org/wandb-registry-motions/fall_recovery --logger wandb --log_project_name motion-fall_recovery_traj_fast --run_name fall_recovery_track0 --num_envs=4096
+
+
+
+
 python scripts/rsl_rl/train.py \
   --task=Tracking-Flat-THS-v0 \
   --registry_name htzhouhit-ths-org/wandb-registry-motions/fall_recovery \

@@ -257,14 +257,14 @@ class TerminationsCfg:
     """Termination terms for the MDP."""
 
     time_out = DoneTerm(func=mdp.time_out, time_out=True)
-    # anchor_pos = DoneTerm(
-    #     func=mdp.bad_anchor_pos_z_only,
-    #     params={"command_name": "motion", "threshold": 0.25},
-    # )
-    # anchor_ori = DoneTerm(
-    #     func=mdp.bad_anchor_ori,
-    #     params={"asset_cfg": SceneEntityCfg("robot"), "command_name": "motion", "threshold": 0.8},
-    # )
+    anchor_pos = DoneTerm(
+        func=mdp.bad_anchor_pos_z_only,
+        params={"command_name": "motion", "threshold": 0.35},
+    )
+    anchor_ori = DoneTerm(
+        func=mdp.bad_anchor_ori,
+        params={"asset_cfg": SceneEntityCfg("robot"), "command_name": "motion", "threshold": 1.2},
+    )
     # ee_body_pos = DoneTerm(
     #     func=mdp.bad_motion_body_pos_z_only,
     #     params={
@@ -276,10 +276,10 @@ class TerminationsCfg:
     #         ],
     #     },
     # )
-    anchor_ori_fall_recovery = DoneTerm(
-        func=mdp.bad_anchor_ori_fall_recovery,
-        params={"asset_cfg": SceneEntityCfg("robot"), "command_name": "motion", "threshold": 3},
-    )
+    # anchor_ori_fall_recovery = DoneTerm(
+    #     func=mdp.bad_anchor_ori_fall_recovery,
+    #     params={"asset_cfg": SceneEntityCfg("robot"), "command_name": "motion", "threshold": 3},
+    # )
 
 
 @configclass
