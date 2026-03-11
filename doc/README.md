@@ -51,7 +51,7 @@ python scripts/rsl_rl/train.py \
 ```bash
 python scripts/rsl_rl/play.py --task=Tracking-Flat-THS-v0 --num_envs=2 --wandb_path={wandb-run-path}   ###在网页上复制
 
-python scripts/rsl_rl/play.py --task=Tracking-Flat-THS-v0 --num_envs=4096 --wandb_path=htzhouhit-ths/motion-fall_recovery/gpunpefv
+python scripts/rsl_rl/play.py --task=Tracking-Flat-THS-v0 --num_envs=4096 --wandb_path=htzhouhit-ths/motion-fall_recovery/1dp1k8sz
 ```
 
 

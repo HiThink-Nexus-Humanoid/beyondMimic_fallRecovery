@@ -276,6 +276,10 @@ class TerminationsCfg:
     #         ],
     #     },
     # )
+    anchor_ori_fall_recovery = DoneTerm(
+        func=mdp.bad_anchor_ori_fall_recovery,
+        params={"asset_cfg": SceneEntityCfg("robot"), "command_name": "motion", "threshold": 3},
+    )
 
 
 @configclass

@@ -42,6 +42,7 @@ class MotionLoader:
         self._body_ang_vel_w = torch.tensor(data["body_ang_vel_w"], dtype=torch.float32, device=device)
         self._body_indexes = body_indexes
         self.time_step_total = self.joint_pos.shape[0]
+        print("data = ", data)
         print("self.time_step_total = ", self.time_step_total)
         print("self._body_indexes = ", self._body_indexes)
         print("self.joint_pos = ", self.joint_pos)
@@ -562,6 +563,7 @@ class MotionCommand(CommandTerm):
     def _update_command(self):
         ## 计算关键帧跟踪误差
         error_anchor_orien = quat_error_magnitude(self.anchor_quat_w, self.robot_anchor_quat_w) ** 2
+        # print("error_anchor_orien.shape = ", error_anchor_orien.shape)
         error_anchor_orien_exp = torch.exp(-error_anchor_orien / 0.4**2)
 
         error_body_orien = quat_error_magnitude(self.body_quat_relative_w, self.robot_body_quat_w) ** 2
@@ -591,7 +593,9 @@ class MotionCommand(CommandTerm):
         print("self.joint_pos = ", self.joint_pos[:2], self.joint_pos[-2:])
         print("self.robot_joint_pos = ", self.robot_joint_pos[:2], self.robot_joint_pos[-2:])
         
-        env_ids_error = torch.where(error < 0.36)[0]
+        # env_ids_error = torch.where(error < 0.36)[0]
+        # env_ids_error = torch.where(error < 1.5)[0]
+        env_ids_error = torch.where(error < 5)[0]
         print("env_ids_error = ", env_ids_error[:20], env_ids_error[-20:])
         # print("self.time_steps = ", self.time_steps)  # --- IGNORE ---
 
