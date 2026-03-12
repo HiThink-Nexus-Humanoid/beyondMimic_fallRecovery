@@ -36,21 +36,42 @@ python scripts/rsl_rl/train.py --task=Tracking-Flat-THS-v0 --registry_name htzho
 
 
 
-python scripts/rsl_rl/train.py --task=Tracking-Flat-THS-v0 --registry_name htzhouhit-ths-org/wandb-registry-motions/fall_recovery --logger wandb --log_project_name motion-fall_recovery_traj_fast --run_name fall_recovery_track0 --num_envs=4096
+python scripts/rsl_rl/train.py --task=Tracking-Flat-THS-v0 --registry_name htzhouhit-ths-org/wandb-registry-motions/fall_recovery_traj_fast
+ --logger wandb --log_project_name motion-fall_recovery_traj_fast --run_name fall_recovery_track3 --num_envs=4096 --headless
 
 
 
-
+##########################################
+# 重新训练指令如下：
 python scripts/rsl_rl/train.py \
   --task=Tracking-Flat-THS-v0 \
   --registry_name htzhouhit-ths-org/wandb-registry-motions/fall_recovery \
   --logger wandb \
-  --log_project_name motion-fall_recovery \
-  --run_name fall_recovery5 \
+  --log_project_name motion-fall_recovery_traj_fast \
+  --run_name fall_recovery_track0 \
   --num_envs=4096 \
   --resume=True \
-  --load_run fall_recovery5 \
+  --load_run fall_recovery_track0 \
   --checkpoint last
+  --load_run参数值:
+
+# 需要填写你之前训练的运行目录名称
+# 默认情况下，运行目录格式为{时间戳}_{run_name}
+# 例如：2023-10-15_14-30-00_fall_recovery_track0
+# 你可以在logs/rsl_rl/fall_recovery目录下查找
+# --checkpoint参数选项:
+
+# last: 加载最新的检查点（推荐）
+# 具体检查点编号：如600（对应你训练到的步数）
+# best: 加载性能最好的检查点
+# 检查点保存位置:
+
+# 检查点默认保存在logs/rsl_rl/fall_recovery/{时间戳}_{run_name}/checkpoints/目录
+# 从你提供的配置可知save_interval = 50，意味着每50次迭代保存一次
+# W&B同步:
+
+# 当使用W&B时，训练会自动连接到之前的运行
+# 确保--log_project_name与之前一致，以便在W&B中继续记录
 ```
 
 
@@ -58,7 +79,7 @@ python scripts/rsl_rl/train.py \
 ```bash
 python scripts/rsl_rl/play.py --task=Tracking-Flat-THS-v0 --num_envs=2 --wandb_path={wandb-run-path}   ###在网页上复制
 
-python scripts/rsl_rl/play.py --task=Tracking-Flat-THS-v0 --num_envs=4096 --wandb_path=htzhouhit-ths/motion-fall_recovery/1dp1k8sz
+python scripts/rsl_rl/play.py --task=Tracking-Flat-THS-v0 --num_envs=4096 --wandb_path=htzhouhit-ths/motion-fall_recovery_traj_fast/q4rf591f
 ```
 
 
