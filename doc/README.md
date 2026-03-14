@@ -1,3 +1,23 @@
+```bash
+# fall_recovery 指令
+
+python scripts/csv_to_npz.py --input_file scripts/data/fall_recovery.csv --input_fps 1  --output_fps 50 --output_name fall_recovery_traj --headless
+
+python scripts/replay_npz.py --registry_name=htzhouhit-ths-org/wandb-registry-motions/fall_recovery_traj
+
+
+# 训练
+python scripts/rsl_rl/train.py --task=Tracking-Flat-THS-v0 --registry_name htzhouhit-ths-org/wandb-registry-motions/fall_recovery_traj  --logger wandb --log_project_name motion-fall_recovery_traj --run_name fall_recovery_track1 --num_envs=4096 --headless
+
+# 播放动作
+python scripts/rsl_rl/play.py --task=Tracking-Flat-THS-v0 --num_envs=4 --wandb_path=htzhouhit-ths/motion-fall_recovery_traj/wde32g5i
+```
+
+
+
+
+
+
 
 ```bash
 python scripts/csv_to_npz.py --input_file scripts/data/0007_Walking001_stageii.csv --input_fps 30 --output_name walking --headless
@@ -44,6 +64,9 @@ python scripts/rsl_rl/train.py --task=Tracking-Flat-THS-v0 --registry_name htzho
 
 # 0312 
 python scripts/rsl_rl/train.py --task=Tracking-Flat-THS-v0 --registry_name htzhouhit-ths-org/wandb-registry-motions/fall_recovery_traj  --logger wandb --log_project_name motion-fall_recovery_traj_fast --run_name fall_recovery_track4 --num_envs=4096 --headless
+
+# 0313
+python scripts/rsl_rl/train.py --task=Tracking-Flat-THS-v0 --registry_name htzhouhit-ths-org/wandb-registry-motions/fall_recovery_traj  --logger wandb --log_project_name motion-fall_recovery_traj_fast --run_name fall_recovery_track7 --num_envs=4096 --headless
 
 
 ##########################################
