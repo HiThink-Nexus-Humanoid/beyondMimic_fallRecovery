@@ -7,10 +7,10 @@ python scripts/replay_npz.py --registry_name=htzhouhit-ths-org/wandb-registry-mo
 
 
 # 训练
-python scripts/rsl_rl/train.py --task=Tracking-Flat-THS-v0 --registry_name htzhouhit-ths-org/wandb-registry-motions/fall_recovery_traj  --logger wandb --log_project_name motion-fall_recovery_traj --run_name fall_recovery_track1 --num_envs=4096 --headless
+python scripts/rsl_rl/train.py --task=Tracking-Flat-THS-v0 --registry_name htzhouhit-ths-org/wandb-registry-motions/fall_recovery_traj  --logger wandb --log_project_name motion-fall_recovery_traj --run_name fall_recovery_track2 --num_envs=4096 --headless
 
 # 播放动作
-python scripts/rsl_rl/play.py --task=Tracking-Flat-THS-v0 --num_envs=4 --wandb_path=htzhouhit-ths/motion-fall_recovery_traj/wde32g5i
+python scripts/rsl_rl/play.py --task=Tracking-Flat-THS-v0 --num_envs=4 --wandb_path=htzhouhit-ths/motion-fall_recovery_traj/x6j5ic5p
 ```
 
 
