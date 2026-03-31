@@ -144,51 +144,14 @@ def main(env_cfg: ManagerBasedRLEnvCfg | DirectRLEnvCfg | DirectMARLEnvCfg, agen
     # export policy to onnx/jit
     export_model_dir = os.path.join(os.path.dirname(resume_path), "exported")
 
-    # Determine export type
-    export_type = "single_motion"
-    print("111111111 ppo_runner.obs_normalizer, export_model_dir = ", ppo_runner.obs_normalizer, export_model_dir)
-    # 1. Export obs_full version - each observation term as separate input
     export_motion_policy_as_onnx(
         env.unwrapped,
         ppo_runner.alg.policy,
         normalizer=ppo_runner.obs_normalizer,
-        type=export_type,
-        obs_full=True,
-        path=export_model_dir,
-        filename="policy_obs_full.onnx",
-    )
-    attach_onnx_metadata(
-        env.unwrapped, 
-        args_cli.wandb_path if args_cli.wandb_path else "none", 
-        export_model_dir,
-        filename="policy_obs_full.onnx"
-    )
-
-    # 2. Export traditional version - single concatenated obs input
-    export_motion_policy_as_onnx(
-        env.unwrapped,
-        ppo_runner.alg.policy,
-        normalizer=ppo_runner.obs_normalizer,
-        type=export_type,
-        obs_full=False,
         path=export_model_dir,
         filename="policy.onnx",
     )
-    attach_onnx_metadata(
-        env.unwrapped, 
-        args_cli.wandb_path if args_cli.wandb_path else "none", 
-        export_model_dir,
-        filename="policy.onnx"
-    )
-
-    # export_motion_policy_as_onnx(
-    #     env.unwrapped,
-    #     ppo_runner.alg.policy,
-    #     normalizer=ppo_runner.obs_normalizer,
-    #     path=export_model_dir,
-    #     filename="policy.onnx",
-    # )
-    # attach_onnx_metadata(env.unwrapped, args_cli.wandb_path if args_cli.wandb_path else "none", export_model_dir)
+    attach_onnx_metadata(env.unwrapped, args_cli.wandb_path if args_cli.wandb_path else "none", export_model_dir)
     # reset environment
     obs, _ = env.get_observations()
     timestep = 0

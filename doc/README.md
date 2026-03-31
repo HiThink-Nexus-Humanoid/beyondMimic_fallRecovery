@@ -11,6 +11,8 @@ python scripts/rsl_rl/train.py --task=Tracking-Flat-THS-v0 --registry_name htzho
 
 # 播放动作
 python scripts/rsl_rl/play.py --task=Tracking-Flat-THS-v0 --num_envs=4 --wandb_path=htzhouhit-ths/motion-fall_recovery_traj/x6j5ic5p
+
+.onnx文件的输出路径为：./logs/rsl_rl/temp/exported
 ```
 
 
